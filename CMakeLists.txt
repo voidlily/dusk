@@ -215,18 +215,30 @@ endif ()
 include(FetchContent)
 
 # Declare all dependencies first so CMake can download them in parallel
-message(STATUS "dusk: Fetching cxxopts")
-FetchContent_Declare(cxxopts
-    URL https://github.com/jarro2783/cxxopts/archive/refs/tags/v3.3.1.tar.gz
-    URL_HASH SHA256=3bfc70542c521d4b55a46429d808178916a579b28d048bd8c727ee76c39e2072
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-)
-message(STATUS "dusk: Fetching nlohmann/json")
-FetchContent_Declare(json
-    URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
-    URL_HASH SHA256=42f6e95cad6ec532fd372391373363b62a14af6d771056dbfc86160e6dfff7aa
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-)
+if (DEFINED ENV{cxxopts_src})
+    FetchContent_Declare(cxxopts
+        SOURCE_DIR "$ENV{cxxopts_src}"
+    )
+else ()
+    message(STATUS "dusk: Fetching cxxopts")
+    FetchContent_Declare(cxxopts
+        URL https://github.com/jarro2783/cxxopts/archive/refs/tags/v3.3.1.tar.gz
+        URL_HASH SHA256=3bfc70542c521d4b55a46429d808178916a579b28d048bd8c727ee76c39e2072
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    )
+endif()
+if (DEFINED ENV{nlohmann_json_src})
+    FetchContent_Declare(nlohmann_json
+        SOURCE_DIR "$ENV{nlohmann_json_src}"
+    )
+else ()
+    message(STATUS "dusk: Fetching nlohmann/json")
+    FetchContent_Declare(json
+        URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
+        URL_HASH SHA256=42f6e95cad6ec532fd372391373363b62a14af6d771056dbfc86160e6dfff7aa
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    )
+endif()
 FetchContent_MakeAvailable(cxxopts json)
 
 if (DUSK_ENABLE_SENTRY_NATIVE)
@@ -239,13 +251,19 @@ if (DUSK_ENABLE_SENTRY_NATIVE)
     set(SENTRY_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     set(SENTRY_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
     set(SENTRY_BUILD_BENCHMARKS OFF CACHE BOOL "" FORCE)
-    FetchContent_Declare(sentry_native
-        GIT_REPOSITORY https://github.com/getsentry/sentry-native.git
-        GIT_TAG 0.13.6
-        GIT_SHALLOW TRUE
-        GIT_PROGRESS TRUE
-        GIT_SUBMODULES_RECURSE TRUE
-    )
+    if (DEFINED ENV{sentry_native_src})
+        FetchContent_Declare(sentry_native
+            SOURCE_DIR "$ENV{sentry_native_src}"
+        )
+    else ()
+        FetchContent_Declare(sentry_native
+            GIT_REPOSITORY https://github.com/getsentry/sentry-native.git
+            GIT_TAG 0.13.6
+            GIT_SHALLOW TRUE
+            GIT_PROGRESS TRUE
+            GIT_SUBMODULES_RECURSE TRUE
+        )
+    endif()
     if (NOT sentry_native_POPULATED)
         FetchContent_Populate(sentry_native)
         set(_dusk_skip_install_rules ${CMAKE_SKIP_INSTALL_RULES})

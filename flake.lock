@@ -16,9 +16,26 @@
         "type": "github"
       }
     },
+    "nixpkgs-dawn": {
+      "locked": {
+        "lastModified": 1738376586,
+        "narHash": "sha256-LcE1EJcyxnv3lmoOruGJRaED7IgKBTvprLoB6haD1fY=",
+        "owner": "junjihashimoto",
+        "repo": "nixpkgs",
+        "rev": "c9e6e65a21397be64eea32755e8bea30d2a61382",
+        "type": "github"
+      },
+      "original": {
+        "owner": "junjihashimoto",
+        "ref": "feature/dawn-native",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "nixpkgs-dawn": "nixpkgs-dawn"
       }
     }
   },
